@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour {
         Move();
     }
 
-    void GatherInput() {
+    void GatherInput() { 
         Vector2 lsInput = Gamepad.current.leftStick.ReadValue();
         _input = new Vector3(lsInput.x, 0, lsInput.y);
         // _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
