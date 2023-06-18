@@ -4,9 +4,31 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
+    // player movement vars
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private float _speed = 5f;
+
+    // player inputs vars
     private Vector3 _input;
+    private Controls _controls;
+    private InputAction _moveAct;
+
+    private void Awake() {
+        _controls = new Controls();
+    }
+
+    private void OnEnable() {
+        _moveAct = _controls.Player.Move;
+        _moveAct.Enable();
+
+        _controls.Player.Fire.performed += OnFire;
+        _controls.Player.Fire.Enable();
+    }
+
+    private void OnDisable() {
+        _moveAct.Disable();
+        _controls.Player.Fire.Disable();
+    }
 
     void Update() {
         GatherInput();
@@ -14,24 +36,23 @@ public class PlayerController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        Move();
+        _rb.MovePosition(transform.position + _input.ToIso().normalized * _speed * Time.deltaTime);
     }
 
-    void GatherInput() { 
-        Vector2 lsInput = Gamepad.current.leftStick.ReadValue();
-        _input = new Vector3(lsInput.x, 0, lsInput.y);
-        // _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+    private void OnFire(InputAction.CallbackContext ctx) {
+        Debug.Log("Fire!");
     }
 
-    void Look() {
+    private void GatherInput() { // consider using callbacks too (InputAction.CallbackContext)
+        Vector2 moveInput = _moveAct.ReadValue<Vector2>();
+        _input = new Vector3(moveInput.x, 0, moveInput.y);
+    }
+
+    private void Look() {
         if(_input == Vector3.zero) return;
 
         var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
-        transform.rotation = rot; // could use lerp (quaternion.rotatetowards)
-    }
-
-    void Move() {
-        _rb.MovePosition(transform.position + _input.ToIso() * _input.normalized.magnitude * _speed * Time.deltaTime);
+        transform.rotation = rot; // could use lerp (quaternion.rotatetowards), or also rotate a separate model ontop
     }
 }
 
