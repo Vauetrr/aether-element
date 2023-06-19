@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
     // player movement vars
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private float _speed = 5f;
+    [SerializeField] private Transform _model;
 
     // player inputs vars
     private Vector3 _input;
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour {
         if(_input == Vector3.zero) return;
 
         var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
-        transform.rotation = rot; // could use lerp (quaternion.rotatetowards), or also rotate a separate model ontop
+        _model.rotation = rot; // could use lerp (quaternion.rotatetowards), or also rotate a separate model ontop
     }
 }
 
