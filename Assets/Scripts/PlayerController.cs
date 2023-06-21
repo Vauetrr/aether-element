@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private float _speed = 5f;
     [SerializeField] private Transform _model;
+    
 
     // player inputs vars
     private Vector3 _input;
