@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 2665519412520834040}
   - component: {fileID: 4535976497242651823}
   m_Layer: 0
-  m_Name: AmongUsModel
+  m_Name: Among Us Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

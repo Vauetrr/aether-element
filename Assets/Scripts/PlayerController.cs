@@ -4,19 +4,23 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour {
-    // player movement vars
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _speed = 5f;
-    [SerializeField] private Transform _model;
-    
-
-    // player inputs vars
-    private Vector3 _input;
+    // player components
+    private Rigidbody _rb;
     private Controls _controls;
+    private Animator _ani;
+
+    // player inputs sticks
     private InputAction _moveAct;
 
+    // private vars
+    [SerializeField] private float _speed = 5f;
+    private Vector3 _input;
+
+    // setup functions
     private void Awake() {
         _controls = new Controls();
+        _rb = GetComponent<Rigidbody>();
+        _ani = GetComponent<Animator>();
     }
 
     private void OnEnable() {
@@ -32,15 +36,23 @@ public class PlayerController : MonoBehaviour {
         _controls.Player.Fire.Disable();
     }
 
+    // update functions
     void Update() {
         GatherInput();
         Look();
     }
 
     void FixedUpdate() {
-        _rb.MovePosition(transform.position + _input.ToIso().normalized * _speed * Time.deltaTime);
+        var move = _speed * Time.deltaTime * _input.ToIso().normalized;
+        if (move == Vector3.zero) {
+            _ani.SetBool("isWalking", false);
+        } else {
+            _ani.SetBool("isWalking", true);
+            _rb.MovePosition(transform.position + move);
+        }
     }
 
+    // input functions
     private void OnFire(InputAction.CallbackContext ctx) {
         Debug.Log("Fire!");
     }
@@ -54,7 +66,7 @@ public class PlayerController : MonoBehaviour {
         if(_input == Vector3.zero) return;
 
         var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
-        _model.rotation = rot; // could use lerp (quaternion.rotatetowards), or also rotate a separate model ontop
+        transform.rotation = rot; // could use lerp (quaternion.rotatetowards), or also rotate a separate model ontop
     }
 }
 
